@@ -1,59 +1,90 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="h-full">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Вход — TradeX Bot</title>
-
-    <!-- Подключение Tailwind CSS -->
+    <title>Вход — TradeX</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Внутренние стили для настройки Tailwind и кастомизации -->
+    
+    <!-- Шрифты Google Fonts: Inter для текста и JetBrains Mono для цифр -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Alpine.js для интерактивности -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Базовые стили и конфигурация Tailwind -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        html, body {
-            height: 100%;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #111827; /* bg-gray-900 */
-            color: #d1d5db; /* text-gray-300 */
-        }
+        [x-cloak] { display: none !important; }
     </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              slate: {
+                50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a', 950: '#020617',
+              },
+            }
+          }
+        }
+      }
+    </script>
 </head>
-<body class="antialiased flex items-center justify-center p-4">
+<body class="h-full bg-slate-950 text-slate-300 font-sans antialiased">
 
-    <main class="w-full max-w-md mx-auto">
-        <div class="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-8 shadow-2xl">
-            <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold text-white">
-                    Вход в <span class="text-emerald-400">TradeX</span>
-                </h1>
-                <p class="text-gray-400 mt-2">Введите пароль для доступа к панели управления.</p>
+    <div class="flex min-h-full flex-col justify-center items-center px-6 py-12 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <h1 class="text-center text-3xl font-bold leading-9 tracking-tight text-white">
+                Trade<span class="text-amber-400">X</span>
+            </h1>
+            <p class="mt-2 text-center text-sm text-slate-400">
+                Вход в панель управления
+            </p>
+        </div>
+      
+        <div class="mt-10 w-full sm:mx-auto sm:max-w-md">
+            <div class="bg-slate-900/50 border border-slate-700/50 rounded-2xl p-8 shadow-2xl">
+                <form method="POST" action="/login" class="space-y-6">
+                    <div>
+                        <label for="password" class="sr-only">Пароль</label>
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="password" 
+                            class="block w-full rounded-md border-0 bg-slate-800/50 py-2.5 px-3 text-white shadow-sm ring-1 ring-inset ring-slate-700 placeholder:text-slate-500 focus:ring-2 focus:ring-inset focus:ring-amber-500 sm:text-sm sm:leading-6 transition-all duration-200" 
+                            placeholder="Ваш пароль" 
+                            required>
+                    </div>
+      
+                    {% if error %}
+                    <div class="bg-red-900/50 border border-red-700/50 text-red-300 px-4 py-2.5 rounded-md text-center text-sm" role="alert">
+                        <span>{{ error }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div>
+                        <button 
+                            type="submit" 
+                            class="flex w-full justify-center rounded-md bg-amber-500 px-3 py-2.5 text-sm font-semibold leading-6 text-slate-900 shadow-sm hover:bg-amber-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 transition-colors duration-200">
+                            Войти
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <form method="POST" action="/login">
-                <div class="mb-4">
-                    <label for="password" class="sr-only">Пароль</label>
-                    <input type="password" name="password" id="password" class="w-full bg-gray-700/50 border-2 border-gray-600 text-white placeholder-gray-500 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-3 transition-all duration-200" placeholder="Ваш пароль" required>
-                </div>
-
-                {% if error %}
-                <div class="bg-red-800/50 border border-red-700 text-red-200 px-4 py-2 rounded-lg text-center text-sm mb-4" role="alert">
-                    <span>{{ error }}</span>
-                </div>
-                {% endif %}
-                
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-emerald-500">
-                    Войти
-                </button>
-            </form>
+            <footer class="text-center text-slate-600 text-xs mt-10">
+                &copy; 2024 TradeX Bot
+            </footer>
         </div>
-        
-        <footer class="text-center text-gray-600 text-xs mt-8">
-            &copy; 2024 TradeX Bot
-        </footer>
-    </main>
+    </div>
 
 </body>
 </html>

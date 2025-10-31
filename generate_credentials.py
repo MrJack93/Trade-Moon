@@ -1,29 +1,63 @@
+# -*- coding: utf-8 -*-
+
+# =============================================================================
+# СКРИПТ ГЕНЕРАЦИИ УЧЕТНЫХ ДАННЫХ
+# =============================================================================
+#
+# Этот скрипт предназначен для создания криптографически безопасных
+# учетных данных, необходимых для работы приложения:
+#
+# 1. FLASK_SECRET_KEY: Секретный ключ для Flask, используемый для подписи
+#    сессий и других данных безопасности.
+# 2. DASHBOARD_PASSWORD: Хэшированный пароль для доступа к панели управления.
+#
+# Запустите этот скрипт (`python generate_credentials.py`) и следуйте
+# инструкциям для обновления вашего файла `.env`.
+#
+# =============================================================================
+
 import secrets
 import bcrypt
 
 def generate_flask_secret_key():
-    """Generates a random, cryptographically secure Flask secret key."""
+    """
+    Генерирует случайный, криптографически безопасный секретный ключ для Flask.
+    Возвращает 32-байтную шестнадцатеричную строку.
+    """
     return secrets.token_hex(32)
 
 def generate_hashed_password():
-    """Generates a bcrypt hashed password."""
+    """
+    Запрашивает у пользователя пароль и генерирует его bcrypt-хэш.
+    """
     while True:
-        password = input("Enter a password for the dashboard: ")
+        # Запрос на ввод пароля в консоли.
+        password = input("Введите пароль для панели управления (dashboard): ")
         if not password:
-            print("Password cannot be empty. Please try again.")
+            print("Пароль не может быть пустым. Пожалуйста, попробуйте снова.")
             continue
+        
+        # Хэширование пароля с использованием bcrypt и случайно сгенерированной "соли".
+        # Это обеспечивает надежную защиту, даже если хэши попадут в чужие руки.
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        
+        # Возвращает хэш в виде строки для сохранения в .env файле.
         return hashed_password.decode('utf-8')
 
+# --- Точка входа ---
+# Этот блок выполняется, если скрипт запущен напрямую.
 if __name__ == "__main__":
+    # Генерируем новый секретный ключ.
     flask_secret_key = generate_flask_secret_key()
+    # Генерируем хэш для пароля панели управления.
     hashed_password = generate_hashed_password()
 
-    print("\nGenerated Credentials:")
-    print("----------------------")
+    # Выводим сгенерированные данные и инструкции в консоль.
+    print("\nСгенерированные учетные данные:")
+    print("---------------------------------")
     print(f"FLASK_SECRET_KEY={flask_secret_key}")
     print(f"DASHBOARD_PASSWORD={hashed_password}")
-    print("\nInstructions:")
-    print("1.  Copy the generated FLASK_SECRET_KEY and DASHBOARD_PASSWORD values.")
-    print("2.  Update the .env file with these values.")
-    print("3.  Restart the application.")
+    print("\nИнструкции:")
+    print("1. Скопируйте сгенерированные значения FLASK_SECRET_KEY и DASHBOARD_PASSWORD.")
+    print("2. Вставьте эти значения в ваш файл .env.")
+    print("3. Перезапустите приложение, чтобы изменения вступили в силу.")
